@@ -8,6 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+   @State private var enabled = false
+    
+    var body: some View{
+        Button("Hit Me"){
+            enabled.toggle()
+        }
+        .frame(width: 200, height: 200, alignment: .center)
+        .background(enabled ? Color.red : Color.blue)
+        .animation(.default)
+        .foregroundColor(.white)
+        
+        .clipShape(RoundedRectangle(cornerRadius: enabled ? 60 : 0))
+        .animation(.interpolatingSpring(stiffness: 50, damping: 1))
+    }
+    
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+
+//3d rotating animation
+struct RotatingAnimation: View{
     @State private var animationAmount = 0.0
     
     var body: some View{
@@ -31,19 +57,13 @@ struct ContentView: View {
             .background(Color.red)
             .foregroundColor(.white)
             .clipShape(Circle())
-        .rotation3DEffect(
+            .rotation3DEffect(
             .degrees(animationAmount),
             axis: (x: 0, y: 1, z: 0)
         )
     }
-    
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
 
 //Animate using Binding
 struct BindingAnimation: View{
