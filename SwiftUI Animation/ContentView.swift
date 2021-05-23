@@ -9,13 +9,38 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View{
-        CardDragAnimation()
+        ViewTransition()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+//Transition on View
+struct ViewTransition: View{
+    @State private var show = false
+    
+    var body: some View{
+        VStack{
+            Button("Tap Me"){
+                withAnimation{
+                    show.toggle()
+                }
+            }
+            
+            if show {
+                Rectangle()
+                    .fill(Color.red)
+                    .frame(width: 200, height: 200)
+                    //.transition(.scale)
+                    .transition(.asymmetric(insertion: .scale, removal: .opacity))
+            }
+            
+            
+        }
     }
 }
 
