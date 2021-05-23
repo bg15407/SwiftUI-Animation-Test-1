@@ -8,27 +8,84 @@
 import SwiftUI
 
 struct ContentView: View {
-   @State private var enabled = false
-    
     var body: some View{
-        Button("Hit Me"){
-            enabled.toggle()
-        }
-        .frame(width: 200, height: 200, alignment: .center)
-        .background(enabled ? Color.red : Color.blue)
-        .animation(.default)
-        .foregroundColor(.white)
-        
-        .clipShape(RoundedRectangle(cornerRadius: enabled ? 60 : 0))
-        .animation(.interpolatingSpring(stiffness: 50, damping: 1))
+        CardDragAnimation()
     }
-    
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
+}
+
+//Card Drag Animation
+
+struct CardDragAnimation: View{
+    @State private var dragAmount = CGSize.zero
+    
+    var body: some View{
+        LinearGradient(gradient: Gradient(colors: [.red, .yellow, .blue, .green]), startPoint: .topLeading, endPoint: .bottomTrailing)
+            .frame(width: 300, height: 200)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .offset(dragAmount)
+            .gesture(
+                DragGesture()
+                    .onChanged{dragAmount = $0.translation }
+                    .onEnded{_ in
+                        withAnimation(.spring()){
+                            dragAmount = .zero
+                        }
+                    }
+            )
+            //.animation(.spring())
+    }
+}
+
+//String Drag Gesture Animation
+struct StringDragAnimation: View {
+    let letters = Array("Hello SwiftUI")
+    @State private var enabled = false
+    @State private var dragAmount = CGSize.zero
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(0..<letters.count) { num in
+                Text(String(self.letters[num]))
+                    .padding(5)
+                    .font(.title)
+                    .background(self.enabled ? Color.blue : Color.red)
+                    .offset(self.dragAmount)
+                    .animation(Animation.default.delay(Double(num) / 20))
+            }
+        }
+        .gesture(
+            DragGesture()
+                .onChanged { self.dragAmount = $0.translation }
+                .onEnded { _ in
+                    self.dragAmount = .zero
+                    self.enabled.toggle()
+                }
+        )
+    }
+}
+
+//Multiple animation modifiers
+struct AnimationStack: View{
+    @State private var enabled = false
+     
+     var body: some View{
+         Button("Hit Me"){
+             enabled.toggle()
+         }
+         .frame(width: 200, height: 200, alignment: .center)
+         .background(enabled ? Color.red : Color.blue)
+         .animation(.default)
+         .foregroundColor(.white)
+         
+         .clipShape(RoundedRectangle(cornerRadius: enabled ? 60 : 0))
+         .animation(.interpolatingSpring(stiffness: 50, damping: 1))
+     }
 }
 
 
